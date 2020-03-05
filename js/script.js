@@ -8,14 +8,14 @@ const shot = document.getElementById('shot');
 const hit = document.getElementById('hit');
 const dead = document.getElementById('dead');
 const enemy = document.getElementById('enemy');
-
+const header = document.querySelector('.header');
 //Button
 const again = document.getElementById('again');
 
 
 //Play object
 const play = {
-    record: 0,
+    record: localStorage.getItem('seaBattleRecord') || 0,
     shot: 0,
     hit: 0,
     dead: 0,
@@ -32,16 +32,42 @@ const play = {
     }
 };
 
+//Ships
+const game = {
+    ships:[
+        {
+            location: ['26', '36', '46', '56'],
+            hit: ['', '', '', '']
+        },
+        {
+            location: ['11', '12', '13'],
+            hit: ['', '', '']
+        },
+        {
+            location: ['69', '79'],
+            hit: ['','']
+        },
+        {
+            location: ['32'],
+            hit: ['']
+        },
+    ],
+    shipCount: 4
+}
+
 
 const show = {
-    hit(){
-
+    hit(elem){
+        this.changeClass(elem, 'hit');
     },
     miss(elem){
         this.changeClass(elem, 'miss');
     },
-    dead(){
-
+    dead(elem){
+        this.changeClass(elem, 'dead');
+    },
+    endGame(elem){
+        this.changeClass(elem, 'end-game');
     },
     changeClass(elem, value){
         elem.className = value;
@@ -52,8 +78,45 @@ const show = {
 //Fire
 const fire = (event) =>{
     const target = event.target;
+    if (target.classList.length !==0 || target.tagName !== 'TD') return;
     show.miss(target);
     play.updateData = 'shot';
+
+    //Find ship
+    for (let i = 0; i < game.ships.length; i++){
+        const ship = game.ships[i];
+        const index = ship.location.indexOf(target.id); //id ship
+        if (index>=0){
+            show.hit(target);
+            play.updateData = 'hit';
+            ship.hit[index] = 'X';
+
+            const life = ship.hit.indexOf('');
+
+            if (life < 0){
+                play.updateData = 'dead';
+                for (const id of ship.location){
+                    show.dead(document.getElementById(id));
+                }
+
+                game.shipCount -=1;
+                if (game.shipCount < 1) {
+                    header.textContent = 'Игра окончена';
+                    header.style.color = 'red';
+                    //Disable click
+                    show.endGame(enemy);
+
+                    //Save record in to Browser
+                    if (play.shot < play.record || play.record === 0){
+                        localStorage.setItem('seaBattleRecord', play.shot);
+                        play.record = play.shot;
+                        play.render();
+                    }
+                    
+                }
+            }
+        }
+    }
   
 
     
@@ -64,7 +127,11 @@ const fire = (event) =>{
 const init = () =>{
     //onClick Watching
     enemy.addEventListener('click', fire);
+    play.render();
 
+    again.addEventListener('click', () => {
+        location.reload();
+    })
 }
 
 init();

@@ -36,6 +36,10 @@ ul {
     width: 200px;
 }
 
+.end-game{
+  pointer-events: none;
+}
+
 .list {
   display: flex;
   justify-content: space-between;
