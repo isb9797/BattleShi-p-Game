@@ -27,6 +27,13 @@ td {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+td:hover {
+  cursor: pointer;
+  background-color: #ff9900;
 }
 
 ul {
@@ -38,6 +45,10 @@ ul {
 
 .end-game{
   pointer-events: none;
+}
+
+.debug{
+  background-color: blue;
 }
 
 .list {
@@ -59,6 +70,19 @@ ul {
     background-image: url('../img/skull.svg'); 
 }
 
+
+.miss:hover{
+  background-color: #fff;
+  cursor: not-allowed;
+}
+.dead:hover{
+  background-color: #fff;
+  cursor: not-allowed;
+}
+.hit:hover{
+  background-color: rgb(248, 93, 93);
+  
+}
 a {
     position: relative;
     width: 300px;
